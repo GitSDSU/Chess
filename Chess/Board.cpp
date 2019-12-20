@@ -32,3 +32,16 @@ void Board::Display_Board()
 	}
 }
 
+
+void Board::Insert_Piece(Pos pos, PtrPiece piece)
+{
+	board[pos]->Insert_Piece(std::move(piece));
+}
+
+
+void Board::Remove_Piece(Pos pos)
+{
+	board[pos]->Remove_Piece();
+}
+
+

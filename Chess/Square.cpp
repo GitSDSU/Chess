@@ -34,6 +34,7 @@ void Square::Display_Square()
 
 void Square::Insert_Piece(PtrPiece p)
 {
+	piece.reset();
 	piece = std::move(p);
 }
 
