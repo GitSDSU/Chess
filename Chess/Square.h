@@ -1,12 +1,15 @@
 #pragma once
 
+#include "Constants.h"
+
 class Square
 {
 public:
-	Square(int, int);
+	Square(Pos);
 	~Square();
+	void Display_Square();
+
 private:
-	int col;
-	int row;
+	Pos position;
 };
 
