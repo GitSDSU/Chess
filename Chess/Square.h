@@ -14,6 +14,7 @@ public:
 	~Square();
 	void Display_Square();
 	void Insert_Piece(PtrPiece);
+	void Remove_Piece();
 
 private:
 	Pos position;
