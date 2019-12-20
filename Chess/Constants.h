@@ -5,6 +5,7 @@
 
 typedef enum { _A = 1, _B, _C, _D, _E, _F, _G, _H } Columns;
 typedef enum { _1 = 1, _2, _3, _4, _5, _6, _7, _8 } Rows;
+typedef enum { White, Black } Team;
 
 struct Pos
 {

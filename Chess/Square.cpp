@@ -3,8 +3,6 @@
 #include <iostream>
 #include <string>
 
-#define ASCII_A 65
-
 
 Square::Square(Pos p)
 {
@@ -60,5 +58,17 @@ void Square::Display_Square()
 	{
 		std::cout << " ";
 	}
+}
+
+
+void Square::Insert_Piece(PtrPiece p)
+{
+	piece = std::move(p);
+}
+
+
+void Square::Remove_Piece()
+{
+	piece.reset();
 }
 
