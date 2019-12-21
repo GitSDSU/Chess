@@ -15,6 +15,7 @@ public:
 	void Display_Square();
 	void Insert_Piece(PtrPiece);
 	void Remove_Piece();
+	bool Is_Square_Empty();
 
 private:
 	Pos position;
