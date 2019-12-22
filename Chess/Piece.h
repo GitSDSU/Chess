@@ -2,6 +2,8 @@
 
 #include "Constants.h"
 
+class Board;
+
 class Piece
 {
 public:
@@ -10,6 +12,7 @@ public:
 	virtual void Move() = 0;
 	int Get_Color() const;
 	int Get_Type() const;
+	virtual bool Is_Move_Valid(Pos, Board &) = 0;
 
 protected:
 	Pos position;
