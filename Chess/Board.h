@@ -19,6 +19,8 @@ public:
 	void Display_Board();
 	void Insert_Piece(Pos, PtrPiece);
 	void Remove_Piece(Pos);
+	bool Is_Square_Empty(Pos);
+	PtrPiece Return_Piece(Pos);
 
 private:
 	MapSquare board;

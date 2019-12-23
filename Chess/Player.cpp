@@ -2,6 +2,9 @@
 #include "Player.h"
 #include "Pawn.h"
 #include "Board.h"
+#include <iostream>
+#include <cctype>
+
 
 #define NUM_PAWNS	8
 
@@ -58,6 +61,45 @@ void Player::Set_Pieces_On_Board(Board &board)
 		board.Insert_Piece((*i).first, (*i).second);
 	}
 }
+
+
+void Player::Choose_A_Piece()
+{
+	std::string msg[] = { "White To Move", "Black To Move" };
+	char col, row;
+	Pos pos;
+	do
+	{
+		std::cout << msg[color] << std::endl;
+		std::cout << "Choose Piece Location: ";
+		std::cin >> col >> row;
+		col = toupper(col);
+		if (col < _A || col > _H || row < _1 || row > _8)
+		{
+			pos.col = 'Z';
+			pos.row = '9';
+		}
+		else
+		{
+			pos.col = (int) col;
+			pos.row = (int) row;
+		}
+	} while (pieces.count(pos));
+	Choose_New_Square(pos);
+}
+
+
+void Player::Choose_New_Square(Pos piecePos)
+{
+	char col, row;
+	Pos newSquare;
+	do
+	{
+		std::cout << "Enter New Location: ";
+		std::cin >> col >> row;
+	} while (false);
+}
+
 
 
 

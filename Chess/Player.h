@@ -3,6 +3,7 @@
 #include <memory>
 #include <map>
 #include "Constants.h"
+#include <string>
 
 class Piece;
 class Board;
@@ -16,6 +17,8 @@ class Player
 public:
 	Player(int, Board &);
 	~Player();
+	void Choose_A_Piece();
+	void Choose_New_Square(Pos);
 
 private:
 	int color;

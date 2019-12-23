@@ -20,10 +20,10 @@ Square::~Square()
 void Square::Display_Square()
 {
 	std::string col[] = { "A", "B", "C", "D", "E", "F", "G", "H" };
+	std::string row[] = { "1", "2", "3", "4", "5", "6", "7", "8" };
 	if (Is_Square_Empty())
 	{
-		std::cout << col[position.col - 1] <<
-			std::to_string(position.row);
+		std::cout << col[position.col - _A] << row[position.row - _1];
 	}
 	else
 	{
@@ -34,7 +34,7 @@ void Square::Display_Square()
 			};
 		std::cout << symbol[piece->Get_Color()][piece->Get_Type()];
 	}
-	if (col[position.col - 1] == "H")
+	if (col[position.col - _A] == "H")
 	{
 		std::cout << std::endl;
 	}
@@ -48,7 +48,7 @@ void Square::Display_Square()
 void Square::Insert_Piece(PtrPiece p)
 {
 	piece.reset();
-	piece = std::move(p);
+	piece = p;
 }
 
 
@@ -61,6 +61,12 @@ void Square::Remove_Piece()
 bool Square::Is_Square_Empty()
 {
 	return (piece == nullptr) ? true : false;
+}
+
+
+PtrPiece Square::Return_Piece(Pos pos)
+{
+	return piece;
 }
 
 

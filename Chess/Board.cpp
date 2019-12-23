@@ -35,7 +35,7 @@ void Board::Display_Board()
 
 void Board::Insert_Piece(Pos pos, PtrPiece piece)
 {
-	board[pos]->Insert_Piece(std::move(piece));
+	board[pos]->Insert_Piece(piece);
 }
 
 
@@ -43,5 +43,18 @@ void Board::Remove_Piece(Pos pos)
 {
 	board[pos]->Remove_Piece();
 }
+
+
+bool Board::Is_Square_Empty(Pos pos)
+{
+	return board[pos]->Is_Square_Empty();
+}
+
+
+PtrPiece Board::Return_Piece(Pos pos)
+{
+	return board[pos]->Return_Piece(pos);
+}
+
 
 
