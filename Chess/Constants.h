@@ -3,6 +3,9 @@
 #define	NUM_PLAYERS	2
 #define NUM_SQUARES 64
 #define NUM_PIECES	16
+#define ESCAPE		27
+#define SPACE		32
+
 
 typedef enum { _A = 65, _B, _C, _D, _E, _F, _G, _H } Columns;
 typedef enum { _1 = 49, _2, _3, _4, _5, _6, _7, _8 } Rows;

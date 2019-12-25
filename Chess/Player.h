@@ -17,8 +17,8 @@ class Player
 public:
 	Player(int, Board &);
 	~Player();
-	void Choose_A_Piece();
-	void Choose_New_Square(Pos);
+	Pos Choose_A_Piece();
+	bool Choose_New_Square(Pos, Board &);
 
 private:
 	int color;

@@ -4,6 +4,7 @@
 #include "Board.h"
 #include <iostream>
 #include <cctype>
+#include <conio.h>
 
 
 #define NUM_PAWNS	8
@@ -63,18 +64,25 @@ void Player::Set_Pieces_On_Board(Board &board)
 }
 
 
-void Player::Choose_A_Piece()
+Pos Player::Choose_A_Piece()
 {
-	std::string msg[] = { "White To Move", "Black To Move" };
+	std::string msg[] = { "[White] Choose Piece:", "[Black] Choose Piece:" };
 	char col, row;
 	Pos pos;
 	do
 	{
-		std::cout << msg[color] << std::endl;
-		std::cout << "Choose Piece Location: ";
-		std::cin >> col >> row;
+		std::cout << msg[color];
+		col = _getch();
 		col = toupper(col);
-		if (col < _A || col > _H || row < _1 || row > _8)
+		std::cout << col;
+		row = _getch();
+		std::cout << row << std::endl;
+		if (col == ESCAPE || row == ESCAPE)
+		{
+			std::cout << "Exit Game" << std::endl;
+			exit(0);
+		}
+		else if (col < _A || col > _H || row < _1 || row > _8)
 		{
 			pos.col = 'Z';
 			pos.row = '9';
@@ -84,20 +92,68 @@ void Player::Choose_A_Piece()
 			pos.col = (int) col;
 			pos.row = (int) row;
 		}
-	} while (pieces.count(pos));
-	Choose_New_Square(pos);
+	} while (!pieces.count(pos));
+	return pos;
 }
 
 
-void Player::Choose_New_Square(Pos piecePos)
+bool Player::Choose_New_Square(Pos piecePos, Board &board)
 {
 	char col, row;
 	Pos newSquare;
+	bool valid = false;
+	PtrPiece playerPiece;
+	bool reset = false;
 	do
 	{
-		std::cout << "Enter New Location: ";
-		std::cin >> col >> row;
-	} while (false);
+		std::cout << "Choose Destination: ";
+		col = _getch();
+		col = toupper(col);
+		std::cout << col;
+		row = _getch();
+		std::cout << row << std::endl;
+
+		if (col == ESCAPE || row == ESCAPE)
+		{
+			std::cout << "Exit Game" << std::endl;
+			exit(0);
+		}
+		else if (col == SPACE || row == SPACE)
+		{
+			std::cout << "Choose Different Piece" << std::endl;
+			reset = true;
+			valid = true;
+		}
+		else if (col < _A || col > _H || row < _1 || row > _8)
+		{
+			valid = false;
+		}
+		else
+		{
+			newSquare.col = col;
+			newSquare.row = row;
+			playerPiece = board.Return_Piece(piecePos);
+			if (playerPiece->Is_Move_Valid(newSquare, board))
+			{
+				valid = true;
+				board.Remove_Piece(piecePos);
+				if (board.Is_Square_Empty(newSquare))
+				{
+					board.Insert_Piece(newSquare, playerPiece);
+				}
+				else
+				{
+					board.Remove_Piece(newSquare);
+					board.Insert_Piece(newSquare, playerPiece);
+				}
+			}
+			else
+			{
+				std::cout << "Illegal Move! Try Again." << std::endl; 
+			}
+		}
+	} while (!valid);
+	return reset;
 }
 
 
