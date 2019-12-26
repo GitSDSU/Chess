@@ -13,6 +13,7 @@ public:
 	int Get_Color() const;
 	int Get_Type() const;
 	virtual bool Is_Move_Valid(Pos, Board &) = 0;
+	virtual bool Attack_Range(Pos) = 0;
 
 protected:
 	Pos position;

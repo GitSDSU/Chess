@@ -66,7 +66,7 @@ void Player::Set_Pieces_On_Board(Board &board)
 
 Pos Player::Choose_A_Piece()
 {
-	std::string msg[] = { "[White] Choose Piece:", "[Black] Choose Piece:" };
+	std::string msg[] = { "[White] Choose Piece: ", "[Black] Choose Piece: " };
 	char col, row;
 	Pos pos;
 	do
@@ -99,6 +99,7 @@ Pos Player::Choose_A_Piece()
 
 bool Player::Choose_New_Square(Pos piecePos, Board &board)
 {
+	std::string msg[] = { "[White] Choose Destination: ", "[Black] Choose Destination: " };
 	char col, row;
 	Pos newSquare;
 	bool valid = false;
@@ -106,7 +107,7 @@ bool Player::Choose_New_Square(Pos piecePos, Board &board)
 	bool reset = false;
 	do
 	{
-		std::cout << "Choose Destination: ";
+		std::cout << msg[color];
 		col = _getch();
 		col = toupper(col);
 		std::cout << col;
@@ -154,6 +155,27 @@ bool Player::Choose_New_Square(Pos piecePos, Board &board)
 		}
 	} while (!valid);
 	return reset;
+}
+
+
+void Player::Update_Attacks(Board &board)
+{
+	Pos pos;
+	for (auto i = pieces.begin(); i != pieces.end(); ++i)
+	{
+		for (int col = _A; col <= _H; col++)
+		{
+			pos.col = col;
+			for (int row = _1; row <= _8; row++)
+			{
+				pos.row = row;
+				if ((*i).second->Attack_Range(pos))
+				{
+					board.Update_Attacks(pos, color);
+				}
+			}
+		}
+	}
 }
 
 

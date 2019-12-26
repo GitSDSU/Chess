@@ -28,7 +28,7 @@ bool Pawn::Is_Move_Valid(Pos newPos, Board &board)
 		{
 			valid_move = true;
 		}
-		else if (Process_Move(newPos, board))
+		else if (Process_Move(newPos))
 		{
 			valid_move = true;
 		}
@@ -38,7 +38,7 @@ bool Pawn::Is_Move_Valid(Pos newPos, Board &board)
 		temporary_piece = board.Return_Piece(newPos);
 		if (temporary_piece->Get_Color() != color)
 		{
-			if (Process_Attack(newPos, board))
+			if (Process_Attack(newPos))
 			{
 				valid_move = true;
 			}
@@ -48,7 +48,7 @@ bool Pawn::Is_Move_Valid(Pos newPos, Board &board)
 }
 
 
-bool Pawn::Process_Move(Pos emptySquare, Board &board)
+bool Pawn::Process_Move(Pos emptySquare)
 {
 	bool valid = false;
 	Pos displacement = emptySquare - position;
@@ -80,7 +80,7 @@ bool Pawn::Process_Move(Pos emptySquare, Board &board)
 }
 
 
-bool Pawn::Process_Attack(Pos enemyPos, Board &board)
+bool Pawn::Process_Attack(Pos enemyPos)
 {
 	bool valid = false;
 	Pos displacement = enemyPos - position;
@@ -114,7 +114,11 @@ bool Pawn::Enpassant(Pos enpassantSquare, Board &board)
 		enemyPiece = board.Return_Piece(enemySquare);
 		if (enemyPiece->Get_Color() != color && enemyPiece->Get_Type() == Type::_Pawn)
 		{
-			valid = true;
+			std::shared_ptr< Pawn > enemyPawn = std::dynamic_pointer_cast< Pawn > (enemyPiece);
+			if (enemyPawn->Jump_Two_Squares())
+			{
+				valid = true;
+			}
 		}
 	}
 	return valid;
@@ -124,6 +128,12 @@ bool Pawn::Enpassant(Pos enpassantSquare, Board &board)
 bool Pawn::Jump_Two_Squares() const
 {
 	return twoSquares;
+}
+
+
+bool Pawn::Attack_Range(Pos pos)
+{
+	return (Process_Attack(pos)) ? true : false;
 }
 
 

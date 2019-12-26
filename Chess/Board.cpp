@@ -53,8 +53,29 @@ bool Board::Is_Square_Empty(Pos pos)
 
 PtrPiece Board::Return_Piece(Pos pos)
 {
-	return board[pos]->Return_Piece(pos);
+	return board[pos]->Return_Piece();
 }
+
+
+void Board::Update_Attacks(Pos pos, int team)
+{
+	board[pos]->Increase_Attack(team);
+}
+
+
+void Board::Reset_Attacks()
+{
+	for (auto i = board.begin(); i != board.end(); ++i)
+	{
+		(*i).second->Reset_Attack();
+	}
+}
+
+
+
+
+
+
 
 
 

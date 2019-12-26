@@ -19,6 +19,7 @@ public:
 	~Player();
 	Pos Choose_A_Piece();
 	bool Choose_New_Square(Pos, Board &);
+	void Update_Attacks(Board &);
 
 private:
 	int color;

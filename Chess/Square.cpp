@@ -9,6 +9,7 @@ Square::Square(Pos p)
 {
 	position.col = p.col;
 	position.row = p.row;
+	whiteAttacks = blackAttacks = 0;
 }
 
 
@@ -64,9 +65,32 @@ bool Square::Is_Square_Empty()
 }
 
 
-PtrPiece Square::Return_Piece(Pos pos)
+PtrPiece Square::Return_Piece()
 {
 	return piece;
 }
+
+
+void Square::Reset_Attack()
+{
+	whiteAttacks = blackAttacks = 0;
+}
+
+void Square::Increase_Attack(int team)
+{
+	if (team == Team::White)
+	{
+		whiteAttacks++;
+	}
+	else
+	{
+		blackAttacks++;
+	}
+}
+
+
+
+
+
 
 

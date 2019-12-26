@@ -10,10 +10,11 @@ public:
 	~Pawn();
 	void Move() { }
 	bool Is_Move_Valid(Pos, Board &);
-	bool Process_Move(Pos, Board &);
-	bool Process_Attack(Pos, Board &);
+	bool Process_Move(Pos);
+	bool Process_Attack(Pos);
 	bool Enpassant(Pos, Board &);
 	bool Jump_Two_Squares() const;
+	bool Attack_Range(Pos);
 
 private:
 	bool twoSquares;
