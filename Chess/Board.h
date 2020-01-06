@@ -21,8 +21,11 @@ public:
 	void Remove_Piece(Pos);
 	bool Is_Square_Empty(Pos);
 	PtrPiece Return_Piece(Pos);
-	void Update_Attacks(Pos, int);
+	void Update_Attacks(Pos, PtrPiece);
 	void Reset_Attacks();
+	bool Is_Square_Attacked(Pos, int);
+	int Square_Attackers(Pos, int);
+	PtrPiece Return_Attacker(Pos, int);
 
 private:
 	MapSquare board;

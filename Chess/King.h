@@ -6,13 +6,16 @@ class King :
 public:
 	King(Pos, int, int);
 	~King();
-	void Move() {  }
 	bool Is_Move_Valid(Pos, Board &);
-	bool Attack_Range(Pos);
+	bool Attack_Range(Pos, Board &);
+	bool Is_Checkmate(Board &);
+	bool Stalemate(Pos, Board &);
 private:
-	bool King_Move(Pos);
+	bool King_Move(Pos, Board &);
 	bool Castle(Pos, Board &);
-	bool King_Attack(Pos, Board &);
+	bool Safe_Square(Board &);
+	bool Capture_Attacker(Board &);
+	bool Block_Attacker(Board &);
 	bool firstMove;
 };
 

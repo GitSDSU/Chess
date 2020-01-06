@@ -9,7 +9,6 @@ Square::Square(Pos p)
 {
 	position.col = p.col;
 	position.row = p.row;
-	whiteAttacks = blackAttacks = 0;
 }
 
 
@@ -73,20 +72,68 @@ PtrPiece Square::Return_Piece()
 
 void Square::Reset_Attack()
 {
-	whiteAttacks = blackAttacks = 0;
+	attackers.clear();
 }
 
-void Square::Increase_Attack(int team)
+
+void Square::Increase_Attack(PtrPiece attackingPiece)
 {
-	if (team == Team::White)
-	{
-		whiteAttacks++;
-	}
-	else
-	{
-		blackAttacks++;
-	}
+	attackers.insert(std::make_pair(attackingPiece->Get_Pos(), attackingPiece));
 }
+
+
+bool Square::Is_Square_Attacked(int team)
+{
+	bool attacked = false;
+	for (auto const &x : attackers)
+	{
+		if (x.second->Get_Color() != team)
+		{
+			attacked = true;
+			break;
+		}
+	}
+	return attacked;
+}
+
+
+int Square::Num_Attackers(int team)
+{
+	int counter = 0;
+	for (auto const &x : attackers)
+	{
+		if (x.second->Get_Color() != team)
+		{
+			counter++;
+		}
+	}
+	return counter;
+}
+
+
+PtrPiece Square::Return_Attacker(int team)
+{
+	/// Assumes there's only one enemy attacker
+	PtrPiece attackerPiece;
+	for (const auto &x : attackers)
+	{
+		if (x.second->Get_Color() != team)
+		{
+			attackerPiece = x.second;
+			break;
+		}
+	}
+	return attackerPiece;
+}
+
+
+
+
+
+
+
+
+
 
 
 
