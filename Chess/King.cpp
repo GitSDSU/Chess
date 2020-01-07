@@ -1,11 +1,12 @@
 #include "stdafx.h"
 #include "King.h"
 #include "Board.h"
+#include "Rook.h"
 
 
 King::King(Pos pos, int c, int t) : Piece(pos, c, t)
 {
-	firstMove = true;
+	moveCounter = 0;
 }
 
 
@@ -40,7 +41,10 @@ bool King::Is_Move_Valid(Pos newPos, Board &board)
 			}
 		}
 	}
-
+	if (valid)
+	{
+		moveCounter++;
+	}
 	return valid;
 }
 
@@ -132,25 +136,34 @@ bool King::Castle(Pos emptySquare, Board &board)
 {
 	bool valid = false;
 	Pos displacement = emptySquare - position;
-	// if (board.Is_Square_Empty("F1") && board.Is_Square_Empty("G1"))
-	if (displacement.Absolute(displacement.col) == 2 && displacement.row == 0 && firstMove)
+	if ((emptySquare.col == _C || emptySquare.col == _G) && First_Move() &&
+		((emptySquare.row == _1 && color == Team::White) || (emptySquare.row == _8 && color == Team::Black)))
 	{
-		Pos rookPos = emptySquare;
-		rookPos.col += (emptySquare.col == _G) ? 1 : -1;
-		if (!board.Is_Square_Empty(rookPos))
+		Pos tempRookPos = emptySquare;
+		if (board.Is_Square_Empty(emptySquare) && !board.Is_Square_Attacked(tempRookPos, color))
 		{
-			PtrPiece rook = board.Return_Piece(rookPos);
-			if (rook->Get_Type() == Type::_Rook)
+			tempRookPos.col = (emptySquare.col == _C) ? _D : _F;
+			Pos tempKnightPos = emptySquare;
+			tempKnightPos.col = (emptySquare.col == _C) ? _B : _G;
+			if (board.Is_Square_Empty(tempRookPos) && !board.Is_Square_Attacked(tempRookPos, color) && board.Is_Square_Empty(tempKnightPos))
 			{
-				//std::shared_ptr< Rook > allyRook = std::dynamic_pointer_cast< Rook > (rook);
-				//if (allyRook->Is_First_Move())
-				if (color == Team::White && position.col == _E && position.row == _1)
+				tempRookPos.col = (emptySquare.col == _C) ? _A : _H;
+				if (!board.Is_Square_Empty(tempRookPos))
 				{
-					valid = true;
-				}
-				else if (color == Team::Black && position.col == _E && position.row == _8)
-				{
-					valid = true;
+					PtrPiece piece = board.Return_Piece(tempRookPos);
+					if (piece->Get_Type() == Type::_Rook)
+					{
+						std::shared_ptr< Rook > rook = std::dynamic_pointer_cast< Rook > (piece);
+						if (rook->First_Move() && rook->Get_Color() == color)
+						{
+							valid = true;
+							Pos rookPos = emptySquare;
+							rookPos.col += (emptySquare.col == _C) ? 1 : -1;
+							board.Remove_Piece(rook->Get_Pos());
+							rook->Set_Pos(rookPos);
+							board.Insert_Piece(rookPos, rook);
+						}
+					}
 				}
 			}
 		}
@@ -174,9 +187,20 @@ bool King::Safe_Square(Board &board)
 		{
 			posTemp.col = posX[i];
 			posTemp.row = posY[i];
-			if (board.Square_Attackers(posTemp, color) == 0)
+			if (board.Square_Attackers(posTemp, color) == 0 && board.Is_Square_Empty(posTemp))
 			{
-				safe = true;
+				if (board.Is_Square_Empty(posTemp))
+				{
+					safe = true;
+				}
+				else
+				{
+					PtrPiece enemyPiece = board.Return_Piece(posTemp);
+					if (enemyPiece->Get_Color() != color)
+					{
+						safe = true;
+					}
+				}
 			}
 		}
 	}
@@ -334,7 +358,10 @@ bool King::Stalemate(Pos newPos, Board &board)
 }
 
 
-
+bool King::First_Move() const
+{
+	return (moveCounter > 0) ? false : true;
+}
 
 
 

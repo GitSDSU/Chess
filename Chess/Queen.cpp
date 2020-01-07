@@ -1,25 +1,48 @@
 #include "stdafx.h"
-#include "Rook.h"
+#include "Queen.h"
 #include "Board.h"
 
 
-Rook::Rook(Pos pos, int c, int t) : Piece(pos, c, t)
-{
-	moveCounter = 0;
-}
-
-
-Rook::~Rook()
+Queen::Queen(Pos pos, int c, int t) : Piece(pos, c, t)
 {
 }
 
 
-bool Rook::Is_Move_Valid(Pos newPos, Board &board)
+Queen::~Queen()
+{
+}
+
+
+bool Queen::Is_Move_Valid(Pos newPos, Board &board)
 {
 	Pos displacement = newPos - position;
-	Pos tempRookMove = position;
-	if ((displacement.col == 0 && displacement.row != 0) || (displacement.col != 0 && displacement.row == 0))
-	{
+
+	if (displacement.Absolute(displacement.col) == displacement.Absolute(displacement.row))
+	{	/// Bishop Move
+		Pos tempBishopMove;
+		if (!board.Is_Square_Empty(newPos))
+		{
+			PtrPiece piece = board.Return_Piece(newPos);
+			if (piece->Get_Color() == color)
+			{
+				return false;
+			}
+		}
+		int range = displacement.col;
+		for (int i = 1; i < range; i++)
+		{
+			tempBishopMove = position;
+			tempBishopMove.col += (displacement.col > 0) ? 1 : -1;
+			tempBishopMove.row += (displacement.row > 0) ? 1 : -1;
+			if (!board.Is_Square_Empty(tempBishopMove))
+			{
+				return false;
+			}
+		}
+	}
+	else if ((displacement.col != 0 && displacement.row == 0) || (displacement.col == 0 && displacement.row != 0))
+	{	/// Rook Move
+		Pos tempRookMove;
 		if (!board.Is_Square_Empty(newPos))
 		{
 			PtrPiece piece = board.Return_Piece(newPos);
@@ -76,83 +99,32 @@ bool Rook::Is_Move_Valid(Pos newPos, Board &board)
 	{
 		return false;
 	}
-	moveCounter++;
 	return true;
 }
 
 
-bool Rook::Attack_Range(Pos attackSquare, Board &board)
+bool Queen::Attack_Range(Pos attackSquare, Board &board)
 {
 	Pos displacement = attackSquare - position;
-	Pos tempRookMove;
-	if ((displacement.col == 0 && displacement.row != 0) || (displacement.col != 0 && displacement.row == 0))
-	{
-		int range = (displacement.col != 0) ? displacement.col : displacement.row;
-		for (int i = 1; i < displacement.Absolute(range); i++)
-		{
-			tempRookMove = position;
-			if (range > 0)
-			{
-				if (displacement.col != 0)
-				{
-					tempRookMove.col += i;
-					if (!board.Is_Square_Empty(tempRookMove))
-					{
-						return false;
-					}
-				}
-				else
-				{
-					tempRookMove.row += i;
-					if (!board.Is_Square_Empty(tempRookMove))
-					{
-						return false;
-					}
-				}
-			}
-			else
-			{
-				if (displacement.col != 0)
-				{
-					tempRookMove.col -= i;
-					if (!board.Is_Square_Empty(tempRookMove))
-					{
-						return false;
-					}
-				}
-				else
-				{
-					tempRookMove.row -= i;
-					if (!board.Is_Square_Empty(tempRookMove))
-					{
-						return false;
-					}
-				}
-			}
-		}
-	}
-	else
-	{
-		return false;
-	}
-	return true;
-}
 
-
-bool Rook::Stalemate(Pos newPos, Board &board)
-{
-	Pos displacement = newPos - position;
-	Pos tempRookMove;
-	if ((displacement.col == 0 && displacement.row != 0) || (displacement.col != 0 && displacement.row == 0))
-	{
-		if (!board.Is_Square_Empty(newPos))
+	if (displacement.Absolute(displacement.col) == displacement.Absolute(displacement.row))
+	{	/// Bishop Move
+		Pos tempBishopMove;
+		int range = displacement.col;
+		for (int i = 1; i < range; i++)
 		{
-			PtrPiece friendOrFoe = board.Return_Piece(newPos);
-			if (friendOrFoe->Get_Color() == color)
+			tempBishopMove = position;
+			tempBishopMove.col += (displacement.col > 0) ? 1 : -1;
+			tempBishopMove.row += (displacement.row > 0) ? 1 : -1;
+			if (!board.Is_Square_Empty(tempBishopMove))
 			{
 				return false;
 			}
 		}
+	}
+	else if ((displacement.col != 0 && displacement.row == 0) || (displacement.col == 0 && displacement.row != 0))
+	{	/// Rook Move
+		Pos tempRookMove;
 		int range = (displacement.col != 0) ? displacement.col : displacement.row;
 		for (int i = 1; i < displacement.Absolute(range); i++)
 		{
@@ -205,9 +177,9 @@ bool Rook::Stalemate(Pos newPos, Board &board)
 }
 
 
-bool Rook::First_Move() const
+bool Queen::Stalemate(Pos newPos, Board &board)
 {
-	return (moveCounter > 0) ? false : true;
+	return Is_Move_Valid(newPos, board);
 }
 
 

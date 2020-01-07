@@ -1,5 +1,6 @@
 #pragma once
 #include "Piece.h"
+class Rook;
 class King :
 	public Piece
 {
@@ -16,6 +17,7 @@ private:
 	bool Safe_Square(Board &);
 	bool Capture_Attacker(Board &);
 	bool Block_Attacker(Board &);
-	bool firstMove;
+	bool First_Move() const;
+	int moveCounter;
 };
 

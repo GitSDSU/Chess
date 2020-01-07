@@ -3,6 +3,9 @@
 #include "Pawn.h"
 #include "King.h"
 #include "Rook.h"
+#include "Bishop.h"
+#include "Queen.h"
+#include "Knight.h"
 #include "Board.h"
 #include <iostream>
 #include <cctype>
@@ -30,10 +33,12 @@ Player::Player(int t, Board &board)
 		else if (i == 8 || i == 9)
 		{
 			/// Knights
+			pieces.insert(std::make_pair(pos, PtrPiece(new Knight(pos, color, _Knight))));
 		}
 		else if (i == 10 || i == 11)
 		{
 			/// Bishops
+			pieces.insert(std::make_pair(pos, PtrPiece(new Bishop(pos, color, _Bishop))));
 		}
 		else if (i == 12 || i == 13)
 		{
@@ -43,6 +48,7 @@ Player::Player(int t, Board &board)
 		else if (i == 14)
 		{
 			/// Queen
+			pieces.insert(std::make_pair(pos, PtrPiece(new Queen(pos, color, _Queen))));
 		}
 		else if (i == 15)
 		{
@@ -158,7 +164,10 @@ bool Player::Choose_New_Square(Pos piecePos, Board &board)
 			}
 		}
 	} while (!valid);
-	Update_Map_Keys(piecePos, newSquare);
+	if (!reset)
+	{
+		Update_Map_Keys(piecePos, newSquare);
+	}
 	return reset;
 }
 
