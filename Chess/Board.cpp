@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "Board.h"
 #include "Square.h"
+#include "Piece.h"
 
 
 Board::Board()
@@ -57,19 +58,43 @@ PtrPiece Board::Return_Piece(Pos pos)
 }
 
 
-void Board::Update_Attacks(Pos pos, int team)
+void Board::Update_Attacks(Pos attackSquare, PtrPiece piece)
 {
-	board[pos]->Increase_Attack(team);
+	board[attackSquare]->Increase_Attack(piece);
 }
 
 
 void Board::Reset_Attacks()
 {
-	for (auto i = board.begin(); i != board.end(); ++i)
+	for (const auto &square : board)
 	{
-		(*i).second->Reset_Attack();
+		square.second->Reset_Attack();
 	}
 }
+
+
+bool Board::Is_Square_Attacked(Pos pos, int team)
+{
+	return board[pos]->Is_Square_Attacked(team);
+}
+
+
+int Board::Square_Attackers(Pos pos, int team)
+{
+	return board[pos]->Num_Attackers(team);
+}
+
+
+PtrPiece Board::Return_Attacker(Pos pos, int team)
+{
+	return board[pos]->Return_Attacker(team);
+}
+
+
+
+
+
+
 
 
 

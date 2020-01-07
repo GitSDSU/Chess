@@ -20,10 +20,13 @@ public:
 	Pos Choose_A_Piece();
 	bool Choose_New_Square(Pos, Board &);
 	void Update_Attacks(Board &);
+	void Is_Stalemate(Board &);
+	void Is_Checkmate(Board &);
 
 private:
 	int color;
 	MapPiece pieces;
 	void Set_Pieces_On_Board(Board &);
+	void Update_Map_Keys(Pos, Pos);
 };
 

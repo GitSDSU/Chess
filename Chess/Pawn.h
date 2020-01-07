@@ -8,15 +8,16 @@ class Pawn :
 public:
 	Pawn(Pos, int, int);
 	~Pawn();
-	void Move() { }
 	bool Is_Move_Valid(Pos, Board &);
-	bool Process_Move(Pos);
-	bool Process_Attack(Pos);
+	bool Process_Move(Pos, Board &);
+	bool Process_Attack(Pos, Board &);
 	bool Enpassant(Pos, Board &);
-	bool Jump_Two_Squares() const;
-	bool Attack_Range(Pos);
+	bool First_Move() const;
+	bool Attack_Range(Pos, Board &);
+	bool Stalemate(Pos, Board &);
 
 private:
-	bool twoSquares;
+	bool firstMove;
+	int moveCounter;
 };
 

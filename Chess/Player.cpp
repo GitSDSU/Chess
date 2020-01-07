@@ -1,6 +1,11 @@
 #include "stdafx.h"
 #include "Player.h"
 #include "Pawn.h"
+#include "King.h"
+#include "Rook.h"
+#include "Bishop.h"
+#include "Queen.h"
+#include "Knight.h"
 #include "Board.h"
 #include <iostream>
 #include <cctype>
@@ -28,22 +33,26 @@ Player::Player(int t, Board &board)
 		else if (i == 8 || i == 9)
 		{
 			/// Knights
+			pieces.insert(std::make_pair(pos, PtrPiece(new Knight(pos, color, _Knight))));
 		}
 		else if (i == 10 || i == 11)
 		{
 			/// Bishops
+			pieces.insert(std::make_pair(pos, PtrPiece(new Bishop(pos, color, _Bishop))));
 		}
 		else if (i == 12 || i == 13)
 		{
 			/// Rooks
+			pieces.insert(std::make_pair(pos, PtrPiece(new Rook(pos, color, _Rook))));
 		}
 		else if (i == 14)
 		{
 			/// Queen
+			pieces.insert(std::make_pair(pos, PtrPiece(new Queen(pos, color, _Queen))));
 		}
 		else if (i == 15)
 		{
-			/// King
+			pieces.insert(std::make_pair(pos, PtrPiece(new King(pos, color, _King))));
 		}
 	}
 	Set_Pieces_On_Board(board);
@@ -138,6 +147,7 @@ bool Player::Choose_New_Square(Pos piecePos, Board &board)
 			{
 				valid = true;
 				board.Remove_Piece(piecePos);
+				playerPiece->Set_Pos(newSquare);
 				if (board.Is_Square_Empty(newSquare))
 				{
 					board.Insert_Piece(newSquare, playerPiece);
@@ -154,6 +164,10 @@ bool Player::Choose_New_Square(Pos piecePos, Board &board)
 			}
 		}
 	} while (!valid);
+	if (!reset)
+	{
+		Update_Map_Keys(piecePos, newSquare);
+	}
 	return reset;
 }
 
@@ -161,7 +175,18 @@ bool Player::Choose_New_Square(Pos piecePos, Board &board)
 void Player::Update_Attacks(Board &board)
 {
 	Pos pos;
-	for (auto i = pieces.begin(); i != pieces.end(); ++i)
+	for (auto piece = pieces.cbegin(); piece != pieces.cend(); /* no increment */)
+	{
+		if (piece->second->Is_Captured())
+		{
+			pieces.erase(piece++);
+		}
+		else
+		{
+			++piece;
+		}
+	}
+	for (auto piece = pieces.begin(); piece != pieces.end(); ++piece)
 	{
 		for (int col = _A; col <= _H; col++)
 		{
@@ -169,14 +194,109 @@ void Player::Update_Attacks(Board &board)
 			for (int row = _1; row <= _8; row++)
 			{
 				pos.row = row;
-				if ((*i).second->Attack_Range(pos))
+				if ((*piece).second->Attack_Range(pos, board))
 				{
-					board.Update_Attacks(pos, color);
+					board.Update_Attacks(pos, (*piece).second);
 				}
 			}
 		}
 	}
 }
+
+
+void Player::Is_Stalemate(Board &board)
+{
+	Pos pos;
+	bool validMove = false;
+	for (const auto &piece : pieces)
+	{
+		for (int col = _A; col <= _H; col++)
+		{
+			pos.col = col;
+			for (int row = _1; row <= _8; row++)
+			{
+				pos.row = row;
+				if (piece.second->Stalemate(pos, board))
+				{
+					validMove = true;
+					break;
+				}
+			}
+			if (validMove)
+			{
+				break;
+			}
+		}
+		if (validMove)
+		{ 
+			break;
+		}
+	}
+	if (!validMove)
+	{
+		std::cout << "Stalemate..." << std::endl;
+		exit(0);
+	}
+}
+
+
+void Player::Update_Map_Keys(Pos oldKey, Pos newKey)
+{
+	typename MapPiece::iterator begin(pieces.find(oldKey));
+	for (;;)
+	{
+		if (begin != pieces.end())
+		{
+			pieces.insert(typename MapPiece::value_type(newKey, begin->second));
+			pieces.erase(begin);
+			begin = pieces.find(oldKey);
+		}
+		else
+		{
+			break;
+		}
+	}
+}
+
+
+void Player::Is_Checkmate(Board &board)
+{
+	for (const auto &piece : pieces)
+	{
+		if (piece.second->Get_Type() == Type::_King)
+		{
+			std::shared_ptr< King > king = std::dynamic_pointer_cast< King > (piece.second);
+			if (king->Is_Checkmate(board))
+			{
+				std::string msg[] = { "Black Player Wins!", "White Player Wins!" };
+				std::cout << msg[color] << std::endl;
+				exit(0);
+			}
+			else
+			{
+				return;
+			}
+		}
+	}
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
