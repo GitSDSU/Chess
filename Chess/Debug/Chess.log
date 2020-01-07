@@ -1,2 +1,3 @@
-﻿  Knight.cpp
+﻿  Board.cpp
+c:\users\admin\desktop\chess\chess\board.cpp(44): warning C4018: '<': signed/unsigned mismatch
   Chess.vcxproj -> C:\Users\admin\Desktop\Chess\Chess\Debug\Chess.exe
